@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+task="${1:?Usage: agent-worktree <task-name> [agent-command ...]}"
+shift
+if [[ $# -eq 0 ]]; then
+  set -- codex
+fi
+
+[[ "$task" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]] || {
+  echo "Task names must use letters, numbers, hyphens, or underscores." >&2
+  exit 1
+}
+
+command -v "$1" >/dev/null || {
+  echo "Agent command not found: $1" >&2
+  exit 1
+}
+
+# Resolve an explicitly supplied relative executable before changing directory.
+case "$1" in
+  */*) agent_command="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")";
+       shift; set -- "$agent_command" "$@" ;;
+esac
+
+repo="$(git rev-parse --show-toplevel)"
+project="$(basename "$repo")"
+base="$(git -C "$repo" rev-parse --verify --end-of-options "${AGENT_BASE_REF:-HEAD}^{commit}")"
+root="${AGENT_WORKTREES_DIR:-$(dirname "$repo")/.agent-worktrees}"
+mkdir -p "$root"
+root="$(cd "$root" && pwd)"
+parent="$(mktemp -d "$root/${project}-${task}.XXXXXX")"
+checkout="$parent/$project"
+
+# Preserve failed setup and completed work for inspection and explicit cleanup.
+printf 'Worktree: %s\n' "$checkout"
+git -C "$repo" worktree add --detach "$checkout" "$base"
+cd "$checkout"
+
+export AGENT_SOURCE_PATH="$repo"
+export AGENT_WORKTREE_PATH="$checkout"
+export AGENT_TASK_NAME="$task"
+
+if [[ -f .codex/setup.sh ]]; then
+  if bash .codex/setup.sh; then
+    :
+  else
+    setup_status=$?
+    printf 'Setup failed; worktree retained at: %s\n' "$checkout" >&2
+    exit "$setup_status"
+  fi
+fi
+
+exec "$@"
