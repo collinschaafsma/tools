@@ -2,7 +2,7 @@ import os, pathlib, subprocess, tempfile
 fixture_directory=tempfile.TemporaryDirectory(prefix='cleanup-test-')
 root=pathlib.Path(fixture_directory.name).resolve()
 repo=root/'repo'; repo.mkdir()
-script=str(pathlib.Path(__file__).resolve().parents[1]/'agent-worktree-cleanup')
+script=str(pathlib.Path(__file__).resolve().parents[1]/'destroy')
 def run(*args,cwd=repo):
  return subprocess.run(args,cwd=cwd,text=True,capture_output=True)
 def git(*args):

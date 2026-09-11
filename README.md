@@ -24,8 +24,8 @@ and `AGENT_TASK_NAME`. Each repository may select its own branch during setup.
 Run from outside the target checkout:
 
 ```sh
-agent-worktree-cleanup /absolute/worktree/path --base origin/main
-agent-worktree-cleanup /absolute/worktree/path --base origin/main --apply --released
+destroy /absolute/worktree/path --base origin/main
+destroy /absolute/worktree/path --base origin/main --apply --released
 ```
 
 Default behavior is a preview with no hook execution. The integration ref is
