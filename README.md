@@ -8,9 +8,9 @@ want to invoke the tools by name.
 Run from a repository:
 
 ```sh
-agent-worktree voice-testing codex
-agent-worktree voice-testing claude
-agent-worktree voice-testing opencode
+spawn voice-testing codex
+spawn voice-testing claude
+spawn voice-testing opencode
 ```
 
 The launcher creates a unique linked checkout, runs `.codex/setup.sh` if present,
@@ -69,7 +69,7 @@ cleanup adapter or documented manual teardown before removal.
 Run from this directory:
 
 ```sh
-bash -n agent-worktree
+bash -n spawn
 python3 tests/test_launcher.py
 python3 tests/test_cleanup.py
 ```

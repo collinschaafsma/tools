@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-task="${1:?Usage: agent-worktree <task-name> [agent-command ...]}"
+task="${1:?Usage: spawn <task-name> [agent-command ...]}"
 shift
 if [[ $# -eq 0 ]]; then
   set -- codex

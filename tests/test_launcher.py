@@ -1,6 +1,6 @@
 import json, os, pathlib, subprocess, tempfile
 
-launcher = pathlib.Path(__file__).resolve().parents[1] / 'agent-worktree'
+launcher = pathlib.Path(__file__).resolve().parents[1] / 'spawn'
 fixture_directory = tempfile.TemporaryDirectory(prefix='launcher-test-')
 root = pathlib.Path(fixture_directory.name).resolve()
 repo = root / 'source repo'
